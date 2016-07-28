@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">POP Movies</string>
+    <string name="sort_by_rate">sort by rate</string>
+    <string name="rating">Rating</string>
+    <string name="rating_average">vote average</string>
+    <string name="date">release date</string>
+    <string name="reviews">reviews</string>
+    <string name="details">detail</string>
+    <string name="trailers">trailer</string>
+    <string name="sort_by">sort by</string>
+    <string name="sort_by_popularity">sort by popularity</string>
+    <string name="sort_by_favorite">sort by favorite</string>
+    <string name="favorite">favorite</string>
+    <string name="share">share</string>
+    
+    <string name="movie_review_detail"></string>
+    <string name="title_activity_detail">Movie Detail</string>
+    <string name="content_authority">com.example.changhsin_wen.popmovies</string>
+</resources>
