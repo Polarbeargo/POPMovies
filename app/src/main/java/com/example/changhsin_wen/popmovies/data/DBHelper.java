@@ -26,7 +26,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 DBContract.MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
                 DBContract.MovieEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 DBContract.MovieEntry.COLUMN_IMAGE + " TEXT, " +
-                DBContract.MovieEntry.COLUMN_IMAGE_COLUMN2 + " TEXT, " +
+                DBContract.MovieEntry.COLUMN_IMAGE2 + " TEXT, " +
                 DBContract.MovieEntry.COLUMN_OVERVIEW + " TEXT, " +
                 DBContract.MovieEntry.COLUMN_RATING + " INTEGER, " +
                 DBContract.MovieEntry.COLUMN_DATE + " TEXT);";

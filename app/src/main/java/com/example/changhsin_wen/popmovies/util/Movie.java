@@ -1,10 +1,11 @@
 package com.example.changhsin_wen.popmovies.util;
 
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import com.example.changhsin_wen.popmovies.fragment.MainActivityFragment;
 /**
  * Created by changhsin-wen on 7/23/16.
  */
@@ -31,6 +32,16 @@ public class Movie implements Parcelable{
         this.rating = movie.getInt("vote_average");
         this.date = movie.getString("release_date");
     }
+    public Movie(Cursor cursor) {
+        this.id = cursor.getInt(MainActivityFragment.COL_MOVIE_ID);
+        this.title = cursor.getString(MainActivityFragment.COL_TITLE);
+        this.image = cursor.getString(MainActivityFragment.COL_IMAGE);
+        this.image2 = cursor.getString(MainActivityFragment.COL_IMAGE2);
+        this.overview = cursor.getString(MainActivityFragment.COL_OVERVIEW);
+        this.rating = cursor.getInt(MainActivityFragment.COL_RATING);
+        this.date = cursor.getString(MainActivityFragment.COL_DATE);
+    }
+
     @Override
     public int describeContents() {
         return 0;

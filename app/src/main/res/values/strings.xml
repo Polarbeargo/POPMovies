@@ -12,8 +12,12 @@
     <string name="sort_by_favorite">sort by favorite</string>
     <string name="favorite">favorite</string>
     <string name="share">share</string>
-    
+    <string name="tmdb_api_key">a9040427abee841060f9c9272e292ee2</string>
     <string name="movie_review_detail"></string>
+    <string name="removed_from_favorites">remove from favorites</string>
+    <string name="add_to_favorites">add to favorites</string>
     <string name="title_activity_detail">Movie Detail</string>
     <string name="content_authority">com.example.changhsin_wen.popmovies</string>
+    <string name="title_item_list">Items</string>
+    <string name="title_item_detail">Item Detail</string>
 </resources>

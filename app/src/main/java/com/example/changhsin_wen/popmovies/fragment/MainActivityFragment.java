@@ -1,6 +1,8 @@
 package com.example.changhsin_wen.popmovies.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -30,7 +32,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import com.example.changhsin_wen.popmovies.R;
 import com.example.changhsin_wen.popmovies.adapter.MoviePosterAdapter;
-
+import com.example.changhsin_wen.popmovies.data.DBContract;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
@@ -51,12 +53,30 @@ public class MainActivityFragment extends Fragment {
     private static final String RATING = "vote_average.desc";
 
 
-
     private String mSortBy = POPULARITY;
 
     private ArrayList<Movie> mMovies = null;
 
     private OnFragmentInteractionListener mListener;
+    private static final String[] MOVIE_COLUMNS = {
+            DBContract.MovieEntry._ID,
+            DBContract.MovieEntry.COLUMN_MOVIE_ID,
+            DBContract.MovieEntry.COLUMN_TITLE,
+            DBContract.MovieEntry.COLUMN_IMAGE,
+            DBContract.MovieEntry.COLUMN_IMAGE2,
+            DBContract.MovieEntry.COLUMN_OVERVIEW,
+            DBContract.MovieEntry.COLUMN_RATING,
+            DBContract.MovieEntry.COLUMN_DATE
+    };
+
+    public static final int COL_ID = 0;
+    public static final int COL_MOVIE_ID = 1;
+    public static final int COL_TITLE = 2;
+    public static final int COL_IMAGE = 3;
+    public static final int COL_IMAGE2 = 4;
+    public static final int COL_OVERVIEW = 5;
+    public static final int COL_RATING = 6;
+    public static final int COL_DATE = 7;
 
     public MainActivityFragment() {
         // Required empty public constructor
@@ -88,18 +108,24 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_fragment_main,menu);
+        inflater.inflate(R.menu.menu_fragment_main, menu);
         MenuItem sort_by_popularity = menu.findItem(R.id.sort_by_popularity);
         MenuItem sort_by_rating = menu.findItem(R.id.sort_by_rating);
+        MenuItem favorit = menu.findItem(R.id.sort_by_favorite);
         if (mSortBy.contentEquals(POPULARITY)) {
-            if (!sort_by_popularity.isChecked())
-                 sort_by_popularity.setChecked(true);
-        }
-        else {
-            if (!sort_by_rating.isChecked())
-                 sort_by_rating.setChecked(true);
-        }
+            if (!sort_by_popularity.isChecked()) {
+                sort_by_popularity.setChecked(true);
+            } else if (mSortBy.contentEquals(RATING)) {
+                if (!sort_by_rating.isChecked()) {
+                    sort_by_rating.setChecked(true);
+                } else if (mSortBy.contentEquals(FAVORITE)) {
+                    if (!favorit.isChecked()) {
+                        favorit.setChecked(true);
+                    }
 
+                }
+            }
+        }
     }
 
     @Override
@@ -122,6 +148,15 @@ public class MainActivityFragment extends Fragment {
                 mSortBy = RATING;
                 updateMovies(mSortBy);
                 return true;
+            case R.id.sort_by_favorite:
+                if (item.isChecked()) {
+                    item.setChecked(false);
+                } else {
+                    item.setChecked(true);
+                }
+                mSortBy = FAVORITE;
+                updateMovies(mSortBy);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -135,7 +170,7 @@ public class MainActivityFragment extends Fragment {
 
         mGridView = (GridView) view.findViewById(R.id.gridview_movies);
 
-        mMoviePosterAdapter = new MoviePosterAdapter(getActivity());
+        mMoviePosterAdapter = new MoviePosterAdapter(getActivity(),new ArrayList<Movie>());
 
         mGridView.setAdapter(mMoviePosterAdapter);
 
@@ -170,8 +205,11 @@ public class MainActivityFragment extends Fragment {
     }
 
     private void updateMovies(String sort_by) {
-            FetchMoviesTask moviesTask = new FetchMoviesTask();
-            moviesTask.execute(sort_by);
+        if (!sort_by.contentEquals(FAVORITE)) {
+            new FetchMoviesTask().execute(sort_by);
+        } else {
+            new FetchFavoriteMoviesTask(getActivity()).execute();
+        }
 
 
     }
@@ -296,6 +334,49 @@ public class MainActivityFragment extends Fragment {
                     for (Movie movie : movies) {
                         mMoviePosterAdapter.add(movie);
                     }
+                }
+                mMovies = new ArrayList<>();
+                mMovies.addAll(movies);
+            }
+        }
+    }
+    public class FetchFavoriteMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
+
+        private Context mContext;
+
+        public FetchFavoriteMoviesTask(Context context) {
+            mContext = context;
+        }
+
+        private List<Movie> getFavoriteMoviesDataFromCursor(Cursor cursor) {
+            List<Movie> results = new ArrayList<>();
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    Movie movie = new Movie(cursor);
+                    results.add(movie);
+                } while (cursor.moveToNext());
+                cursor.close();
+            }
+            return results;
+        }
+
+        @Override
+        protected List<Movie> doInBackground(Void... params) {
+            Cursor cursor = mContext.getContentResolver().query(
+                    DBContract.MovieEntry.CONTENT_URI,
+                    MOVIE_COLUMNS,
+                    null,
+                    null,
+                    null
+            );
+            return getFavoriteMoviesDataFromCursor(cursor);
+        }
+
+        @Override
+        protected void onPostExecute(List<Movie> movies) {
+            if (movies != null) {
+                if (mMoviePosterAdapter != null) {
+                    mMoviePosterAdapter.setData(movies);
                 }
                 mMovies = new ArrayList<>();
                 mMovies.addAll(movies);

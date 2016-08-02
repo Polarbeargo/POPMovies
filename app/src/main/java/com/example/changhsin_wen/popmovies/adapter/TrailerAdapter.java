@@ -4,31 +4,27 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.example.changhsin_wen.popmovies.util.Trailer;
 import com.bumptech.glide.Glide;
-import com.squareup.picasso.Picasso;
 import com.example.changhsin_wen.popmovies.R;
-import com.example.changhsin_wen.popmovies.util.Movie;
-import android.util.Log;
 import java.util.List;
 
 /**
- * Created by changhsin-wen on 7/23/16.
+ * Created by changhsin-wen on 7/30/16.
  */
 
-public class MoviePosterAdapter extends BaseAdapter {
+public class TrailerAdapter extends BaseAdapter {
 
     private final Context mContext;
     private final LayoutInflater mInflater;
+    private final Trailer mLock = new Trailer();
 
-    private final Movie mLock = new Movie();
+    private List<Trailer> mObjects;
 
-    private List<Movie> mObjects;
-
-    public MoviePosterAdapter(Context context, List<Movie> objects) {
+    public TrailerAdapter(Context context, List<Trailer> objects) {
         mContext = context;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mObjects = objects;
@@ -38,7 +34,7 @@ public class MoviePosterAdapter extends BaseAdapter {
         return mContext;
     }
 
-    public void add(Movie object) {
+    public void add(Trailer object) {
         synchronized (mLock) {
             mObjects.add(object);
         }
@@ -52,20 +48,13 @@ public class MoviePosterAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void setData(List<Movie> data) {
-        clear();
-        for (Movie movie : data) {
-            add(movie);
-        }
-    }
-
     @Override
     public int getCount() {
         return mObjects.size();
     }
 
     @Override
-    public Movie getItem(int position) {
+    public Trailer getItem(int position) {
         return mObjects.get(position);
     }
 
@@ -74,42 +63,37 @@ public class MoviePosterAdapter extends BaseAdapter {
         return position;
     }
 
-
     @Override
-    public View getView(int position, View view, ViewGroup viewGroup) {
-        //View view = convertView;
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view = convertView;
         ViewHolder viewHolder;
 
         if (view == null) {
-            view = LayoutInflater.from(getContext()).inflate(R.layout.grid_item_poster, viewGroup, false);
+            view = mInflater.inflate(R.layout.item_trailer, parent, false);
             viewHolder = new ViewHolder(view);
             view.setTag(viewHolder);
         }
 
-        final Movie movie = getItem(position);
-
-        String image_url = "http://image.tmdb.org/t/p/w185" + movie.getImage();
+        final Trailer trailer = getItem(position);
 
         viewHolder = (ViewHolder) view.getTag();
-        Log.d("Adapter","Did I get movie poster");
-        Glide.with(getContext()).load(image_url).into(viewHolder.imageView);
-        viewHolder.titleView.setText(movie.getTitle());
+
+        String yt_thumbnail_url = "http://img.youtube.com/vi/" + trailer.getKey() + "/0.jpg";
+        Glide.with(getContext()).load(yt_thumbnail_url).into(viewHolder.imageView);
+
+        viewHolder.nameView.setText(trailer.getName());
 
         return view;
     }
 
-
-
-
     public static class ViewHolder {
         public final ImageView imageView;
-        public final TextView titleView;
+        public final TextView nameView;
 
         public ViewHolder(View view) {
-            imageView = (ImageView) view.findViewById(R.id.grid_item_image);
-            titleView = (TextView) view.findViewById(R.id.grid_item_title);
+            imageView = (ImageView) view.findViewById(R.id.trailer_image);
+            nameView = (TextView) view.findViewById(R.id.trailer_name);
         }
     }
-
 
 }
