@@ -47,10 +47,10 @@ public class MainActivityFragment extends Fragment {
     private MoviePosterAdapter mMoviePosterAdapter;
 
     private static final String SORT_SETTING = "sort_setting";
-    private static final String POPULARITY = "popularity.desc";
+    private static final String POPULARITY = "popular";
     private static final String MOVIES = "movies";
     private static final String FAVORITE = "favorite";
-    private static final String RATING = "vote_average.desc";
+    private static final String RATING = "top_rated";
 
 
     private String mSortBy = POPULARITY;
@@ -257,19 +257,26 @@ public class MainActivityFragment extends Fragment {
 
             HttpURLConnection urlConnection = null;
             BufferedReader reader = null;
-
+            Uri builtUri;
             String jsonStr = null;
 
             try {
-                final String BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
-                final String SORT_BY_PARAM = "sort_by";
                 final String API_KEY_PARAM = "api_key";
 
-                Uri builtUri = Uri.parse(BASE_URL).buildUpon()
-                        .appendQueryParameter(SORT_BY_PARAM, params[0])
-                        .appendQueryParameter(API_KEY_PARAM, getString(R.string.tmdb_api_key))
-                        .build();
-
+                switch (mSortBy) {
+                    // Sample URL: http://api.themoviedb.org/3/movie/popular?api_key=[YOUR_API_KEY]
+                    case RATING:
+                        builtUri = Uri.parse("http://api.themoviedb.org/3/movie/top_rated").buildUpon()
+                                .appendQueryParameter(API_KEY_PARAM, getString(R.string.tmdb_api_key)).build();
+                        break;
+                    case POPULARITY:
+                        builtUri = Uri.parse("http://api.themoviedb.org/3/movie/popular").buildUpon()
+                                .appendQueryParameter(API_KEY_PARAM, getString(R.string.tmdb_api_key)).build();
+                        break;
+                    default:
+                        builtUri = Uri.parse("http://api.themoviedb.org/3/movie/popular").buildUpon()
+                                .appendQueryParameter(API_KEY_PARAM, getString(R.string.tmdb_api_key)).build();
+                        break;}
                 URL url = new URL(builtUri.toString());
                 Log.d("MainF","+url="+url);
                 urlConnection = (HttpURLConnection) url.openConnection();
