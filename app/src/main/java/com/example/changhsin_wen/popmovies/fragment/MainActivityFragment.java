@@ -176,9 +176,7 @@ public class MainActivityFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Movie movie = mMoviePosterAdapter.getItem(position);
                 ((Callback) getActivity()).onItemSelected(movie);
-                Intent intent = new Intent(getActivity(), ReviewActivity.class)
-                        .putExtra(ReviewFragment.MOVIE_REVIEW, movie);
-                startActivity(intent);
+
             }
         });
 
