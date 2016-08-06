@@ -135,38 +135,40 @@ public class ReviewFragment extends Fragment {
 
         if (mMovie != null) {
             reviewLayout.setVisibility(View.VISIBLE);
+
+
+            detailImage = (ImageView) view.findViewById(R.id.detail_image);
+            detailTitle = (TextView) view.findViewById(R.id.detail_title);
+            detailOverview = (TextView) view.findViewById(R.id.detail_overview);
+            detailDate = (TextView) view.findViewById(R.id.detail_date);
+            detailVoteAverage = (TextView) view.findViewById(R.id.detail_vote_average);
+            detailTitle.setText(mMovie.getTitle());
+            detailOverview.setText(mMovie.getOverview());
+            mTrailersView = (LinearListView) view.findViewById(R.id.detail_trailers);
+            mReviewsView = (LinearListView) view.findViewById(R.id.detail_reviews);
+
+            mReviewsCardview = (CardView) view.findViewById(R.id.detail_reviews_cardview);
+            mTrailersCardview = (CardView) view.findViewById(R.id.detail_trailers_cardview);
+
+            mTrailerAdapter = new TrailerAdapter(getActivity(), new ArrayList<Trailer>());
+            mTrailersView.setAdapter(mTrailerAdapter);
+
+            mTrailersView.setOnItemClickListener(new LinearListView.OnItemClickListener() {
+                @Override
+                public void onItemClick(LinearListView linearListView, View view,
+                                        int position, long id) {
+                    Trailer trailer = mTrailerAdapter.getItem(position);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("http://www.youtube.com/watch?v=" + trailer.getKey()));
+                    startActivity(intent);
+                }
+            });
+
+            mReviewAdapter = new ReviewAdapter(getActivity(), new ArrayList<Review>());
+            mReviewsView.setAdapter(mReviewAdapter);
         } else {
             reviewLayout.setVisibility(View.INVISIBLE);
         }
-        detailImage = (ImageView) view.findViewById(R.id.detail_image);
-        detailTitle = (TextView) view.findViewById(R.id.detail_title);
-        detailOverview = (TextView)view.findViewById(R.id.detail_overview);
-        detailDate = (TextView) view.findViewById(R.id.detail_date);
-        detailVoteAverage = (TextView) view.findViewById(R.id.detail_vote_average);
-        detailTitle.setText(mMovie.getTitle());
-        detailOverview.setText(mMovie.getOverview());
-        mTrailersView = (LinearListView) view.findViewById(R.id.detail_trailers);
-        mReviewsView = (LinearListView) view.findViewById(R.id.detail_reviews);
-
-        mReviewsCardview = (CardView) view.findViewById(R.id.detail_reviews_cardview);
-        mTrailersCardview = (CardView) view.findViewById(R.id.detail_trailers_cardview);
-
-        mTrailerAdapter = new TrailerAdapter(getActivity(), new ArrayList<Trailer>());
-        mTrailersView.setAdapter(mTrailerAdapter);
-
-        mTrailersView.setOnItemClickListener(new LinearListView.OnItemClickListener() {
-            @Override
-            public void onItemClick(LinearListView linearListView, View view,
-                                    int position, long id) {
-                Trailer trailer = mTrailerAdapter.getItem(position);
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("http://www.youtube.com/watch?v=" + trailer.getKey()));
-                startActivity(intent);
-            }
-        });
-
-        mReviewAdapter = new ReviewAdapter(getActivity(), new ArrayList<Review>());
-        mReviewsView.setAdapter(mReviewAdapter);
 
         if (mMovie != null) {
 
