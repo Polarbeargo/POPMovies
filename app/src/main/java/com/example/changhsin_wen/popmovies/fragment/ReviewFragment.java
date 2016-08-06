@@ -81,7 +81,6 @@ public class ReviewFragment extends Fragment {
     private LinearListView mTrailersView;
     private LinearListView mReviewsView;
     private ScrollView reviewLayout;
-    private ShareActionProvider mShareActionProvider;
     private Trailer mTrailer;
     private Toast mToast;
     private OnFragmentInteractionListener mListener;
@@ -220,9 +219,7 @@ public class ReviewFragment extends Fragment {
             }.execute();
 
 
-            if (mTrailer != null) {
-                mShareActionProvider.setShareIntent(createShareMovieIntent());
-            }
+
         }
     }
 
@@ -428,9 +425,7 @@ public class ReviewFragment extends Fragment {
                     }
 
                     mTrailer = trailers.get(0);
-                    if (mShareActionProvider != null) {
-                        mShareActionProvider.setShareIntent(createShareMovieIntent());
-                    }
+
                 }
             }
         }

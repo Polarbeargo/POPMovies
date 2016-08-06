@@ -42,7 +42,7 @@ import com.example.changhsin_wen.popmovies.data.DBContract;
  * create an instance of this fragment.
  */
 public class MainActivityFragment extends Fragment {
-
+    public static final String TAG = "MainActivityFragment";
     private GridView mGridView;
     private MoviePosterAdapter mMoviePosterAdapter;
 
@@ -113,20 +113,17 @@ public class MainActivityFragment extends Fragment {
         MenuItem sort_by_rating = menu.findItem(R.id.sort_by_rating);
         MenuItem favorit = menu.findItem(R.id.sort_by_favorite);
         if (mSortBy.contentEquals(POPULARITY)) {
-            if (!sort_by_popularity.isChecked()) {
-                sort_by_popularity.setChecked(true);
-            } else if (mSortBy.contentEquals(RATING)) {
-                if (!sort_by_rating.isChecked()) {
-                    sort_by_rating.setChecked(true);
-                } else if (mSortBy.contentEquals(FAVORITE)) {
-                    if (!favorit.isChecked()) {
-                        favorit.setChecked(true);
-                    }
-
-                }
-            }
+            sort_by_popularity.setChecked(true);
+        } else if (mSortBy.contentEquals(RATING)) {
+            sort_by_rating.setChecked(true);
+        } else if (mSortBy.contentEquals(FAVORITE)) {
+            favorit.setChecked(true);
         }
+
     }
+
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -178,6 +175,7 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Movie movie = mMoviePosterAdapter.getItem(position);
+                ((Callback) getActivity()).onItemSelected(movie);
                 Intent intent = new Intent(getActivity(), ReviewActivity.class)
                         .putExtra(ReviewFragment.MOVIE_REVIEW, movie);
                 startActivity(intent);
@@ -275,7 +273,7 @@ public class MainActivityFragment extends Fragment {
                         .build();
 
                 URL url = new URL(builtUri.toString());
-
+                Log.d("MainF","+url="+url);
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();

@@ -27,7 +27,7 @@ public class ReviewActivity extends AppCompatActivity {
             fragment.setArguments(arguments);
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.movie_review_container, fragment)
+                    .add(R.id.movie_detail_container, fragment)
                     .commit();
         }
     }
